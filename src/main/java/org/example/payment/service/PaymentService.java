@@ -1,26 +1,34 @@
 package org.example.payment.service;
 
+import lombok.RequiredArgsConstructor;
+import org.example.payment.dto.PaymentDTO;
+import org.example.payment.mapper.PaymentMapper;
 import org.example.payment.model.Payment;
 import org.example.payment.repository.PaymentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
 
-    @Autowired
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
+    private final PaymentMapper paymentMapper;
 
     // List all payments
-    public List<Payment> getAllPayments() {
-        return paymentRepository.findAll();
+    public List<PaymentDTO> getAllPayments() {
+        return paymentRepository.findAll().stream()
+                .map(paymentMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     // Create a new payment
-    public Payment createPayment(Payment payment) {
-        return paymentRepository.saveAndFlush(payment);
+    public PaymentDTO createPayment(PaymentDTO paymentDTO) {
+        Payment payment = paymentMapper.toEntity(paymentDTO);
+        Payment savedPayment = paymentRepository.save(payment);
+        return paymentMapper.toDto(savedPayment);
     }
 
     // Delete a payment by ID
