@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: andy
+      changes:
+        - createTable:
+            tableName: payment
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: amount
+                  type: DECIMAL(10,2)
+              - column:
+                  name: currency
+                  type: VARCHAR(10)
+              - column:
+                  name: from_account
+                  type: VARCHAR(50)
+              - column:
+                  name: to_account
+                  type: VARCHAR(50)
+              - column:
+                  name: timestamp
+                  type: TIMESTAMP
+
+# Add initial data to the `payment` table
+  - changeSet:
+      id: 2
+      author: andy
+      changes:
+        - insert:
+            tableName: payment
+            columns:
+              - column:
+                  name: amount
+                  value: "100.50"
+              - column:
+                  name: currency
+                  value: "USD"
+              - column:
+                  name: from_account
+                  value: "ACC123"
+              - column:
+                  name: to_account
+                  value: "ACC456"
+              - column:
+                  name: timestamp
+                  valueDate: "2023-01-01T10:00:00"
+
+        - insert:
+            tableName: payment
+            columns:
+              - column:
+                  name: amount
+                  value: "250.00"
+              - column:
+                  name: currency
+                  value: "EUR"
+              - column:
+                  name: from_account
+                  value: "ACC789"
+              - column:
+                  name: to_account
+                  value: "ACC012"
+              - column:
+                  name: timestamp
+                  valueDate: "2023-01-02T11:30:00"

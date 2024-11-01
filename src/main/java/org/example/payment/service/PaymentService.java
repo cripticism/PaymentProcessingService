@@ -2,6 +2,8 @@ package org.example.payment.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.payment.dto.PaymentDTO;
+import org.example.payment.exception.InvalidPaymentException;
+import org.example.payment.exception.PaymentNotFoundException;
 import org.example.payment.mapper.PaymentMapper;
 import org.example.payment.model.Payment;
 import org.example.payment.repository.PaymentRepository;
@@ -26,6 +28,9 @@ public class PaymentService {
 
     // Create a new payment
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
+        if (paymentDTO.getAmount() == null || paymentDTO.getAmount() <= 0) {
+            throw new InvalidPaymentException("Invalid payment amount.");
+        }
         Payment payment = paymentMapper.toEntity(paymentDTO);
         Payment savedPayment = paymentRepository.save(payment);
         return paymentMapper.toDto(savedPayment);
@@ -33,11 +38,9 @@ public class PaymentService {
 
     // Delete a payment by ID
     public void deletePayment(Long id) {
+        if (!paymentRepository.existsById(id)) {
+            throw new PaymentNotFoundException(id);
+        }
         paymentRepository.deleteById(id);
-    }
-
-    // Check if payments exists by ID
-    public boolean paymentExists(Long id) {
-        return paymentRepository.existsById(id);
     }
 }

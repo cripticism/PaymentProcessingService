@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 
 @Component
@@ -17,7 +18,7 @@ public class PaymentMapper {
         payment.setCurrency(dto.getCurrency());
         payment.setFromAccount(dto.getFromAccount());
         payment.setToAccount(dto.getToAccount());
-        payment.setTimestamp(Timestamp.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+        payment.setTimestamp(Timestamp.from(LocalDate.now().atTime(LocalTime.now()).atZone(ZoneId.systemDefault()).toInstant()));
         return payment;
     }
 

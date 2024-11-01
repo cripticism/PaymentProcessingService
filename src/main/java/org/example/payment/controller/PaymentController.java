@@ -32,12 +32,9 @@ public class PaymentController {
     // DELETE /payments/{id}: Delete a payment by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
-        if (paymentService.paymentExists(id)) {
-            paymentService.deletePayment(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        paymentService.deletePayment(id);
+        return ResponseEntity.noContent().build();
+
     }
 
 }
