@@ -11,7 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.util.Arrays;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,25 +31,38 @@ class PaymentServiceTest {
     @InjectMocks
     private PaymentService paymentService;
 
+    private Pageable pageable;
+    private Payment payment;
+    private PaymentDTO paymentDTO;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        pageable = PageRequest.of(0, 10);
+
+        // Create sample Payment and PaymentDTO
+        payment = new Payment();
+        payment.setAmount(150.0);
+        paymentDTO = new PaymentDTO();
+        paymentDTO.setAmount(150.0);
+
+        when(paymentMapper.toDto(any(Payment.class))).thenReturn(paymentDTO);
     }
 
     @Test
-    void testGetAllPayments() {
-        Payment payment1 = new Payment(1L, 100.0, "USD", "Account1", "Account2", null);
-        Payment payment2 = new Payment(2L, 200.0, "EUR", "Account3", "Account4", null);
+    public void testGetAllPayments_withAmountGreaterThan() {
+        // Arrange
+        Double amountGreaterThan = 100.0;
+        Page<Payment> paymentsPage = new PageImpl<>(List.of(payment));
+        when(paymentRepository.findByAmountGreaterThan(amountGreaterThan, pageable)).thenReturn(paymentsPage);
 
-        when(paymentRepository.findAll()).thenReturn(Arrays.asList(payment1, payment2));
-        when(paymentMapper.toDto(payment1)).thenReturn(new PaymentDTO(100.0, "USD", "Account1", "Account2"));
-        when(paymentMapper.toDto(payment2)).thenReturn(new PaymentDTO(200.0, "EUR", "Account3", "Account4"));
+        // Act
+        Page<PaymentDTO> result = paymentService.getAllPayments(pageable, amountGreaterThan, null, null, null, null);
 
-        List<PaymentDTO> payments = paymentService.getAllPayments();
-
-        assertEquals(2, payments.size());
-        verify(paymentRepository, times(1)).findAll();
-        verify(paymentMapper, times(2)).toDto(any(Payment.class));
+        // Assert
+        verify(paymentRepository, times(1)).findByAmountGreaterThan(amountGreaterThan, pageable);
+        assertEquals(1, result.getContent().size());
+        assertEquals(paymentDTO.getAmount(), result.getContent().get(0).getAmount());
     }
 
     @Test

@@ -7,6 +7,8 @@ import org.example.payment.exception.PaymentNotFoundException;
 import org.example.payment.mapper.PaymentMapper;
 import org.example.payment.model.Payment;
 import org.example.payment.repository.PaymentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +22,31 @@ public class PaymentService {
     private final PaymentMapper paymentMapper;
 
     // List all payments
-    public List<PaymentDTO> getAllPayments() {
-        return paymentRepository.findAll().stream()
-                .map(paymentMapper::toDto)
-                .collect(Collectors.toList());
+//    public List<PaymentDTO> getAllPayments() {
+//        return paymentRepository.findAll().stream()
+//                .map(paymentMapper::toDto)
+//                .collect(Collectors.toList());
+//    }
+
+    public Page<PaymentDTO> getAllPayments(Pageable pageable, Double amountGreaterThan, Double amountLessThan, Double amountEquals,
+                                           Double minAmount, Double maxAmount) {
+        Page<Payment> payments;
+
+        if (amountGreaterThan != null) {
+            payments = paymentRepository.findByAmountGreaterThan(amountGreaterThan, pageable);
+        } else if (amountLessThan != null) {
+            payments = paymentRepository.findByAmountLessThan(amountLessThan, pageable);
+        } else if (amountEquals != null) {
+            payments = paymentRepository.findByAmount(amountEquals, pageable);
+        } else if (minAmount != null && maxAmount != null) {
+            payments = paymentRepository.findByAmountBetween(minAmount, maxAmount, pageable);
+        } else {
+            // No filter applied, get all payments
+            payments = paymentRepository.findAll(pageable);
+        }
+
+        // Map entities to DTOs
+        return payments.map(paymentMapper::toDto);
     }
 
     // Create a new payment

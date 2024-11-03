@@ -3,6 +3,8 @@ package org.example.payment.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.payment.dto.PaymentDTO;
 import org.example.payment.service.PaymentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +18,21 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     // GET /payments: List all payments
+//    @GetMapping
+//    public ResponseEntity<List<PaymentDTO>> getAllPayments() {
+//        List<PaymentDTO> payments = paymentService.getAllPayments();
+//        return ResponseEntity.ok(payments);
+//    }
+
     @GetMapping
-    public ResponseEntity<List<PaymentDTO>> getAllPayments() {
-        List<PaymentDTO> payments = paymentService.getAllPayments();
+    public ResponseEntity<Page<PaymentDTO>> getAllPayments(Pageable pageable,
+                                                           @RequestParam(required = false) Double amountGreaterThan,
+                                                           @RequestParam(required = false) Double amountLessThan,
+                                                           @RequestParam(required = false) Double amountEquals,
+                                                           @RequestParam(required = false) Double minAmount,
+                                                           @RequestParam(required = false) Double maxAmount) {
+
+        Page<PaymentDTO> payments = paymentService.getAllPayments(pageable, amountGreaterThan, amountLessThan, amountEquals, minAmount, maxAmount);
         return ResponseEntity.ok(payments);
     }
 
