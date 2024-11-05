@@ -11,9 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -22,12 +19,6 @@ public class PaymentService {
     private final PaymentMapper paymentMapper;
 
     // List all payments
-//    public List<PaymentDTO> getAllPayments() {
-//        return paymentRepository.findAll().stream()
-//                .map(paymentMapper::toDto)
-//                .collect(Collectors.toList());
-//    }
-
     public Page<PaymentDTO> getAllPayments(Pageable pageable, Double amountGreaterThan, Double amountLessThan, Double amountEquals,
                                            Double minAmount, Double maxAmount) {
         Page<Payment> payments;

@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/payments")
 @RequiredArgsConstructor
@@ -18,12 +16,6 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     // GET /payments: List all payments
-//    @GetMapping
-//    public ResponseEntity<List<PaymentDTO>> getAllPayments() {
-//        List<PaymentDTO> payments = paymentService.getAllPayments();
-//        return ResponseEntity.ok(payments);
-//    }
-
     @GetMapping
     public ResponseEntity<Page<PaymentDTO>> getAllPayments(Pageable pageable,
                                                            @RequestParam(required = false) Double amountGreaterThan,

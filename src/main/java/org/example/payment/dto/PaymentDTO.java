@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @RequiredArgsConstructor
+@ToString
 public class PaymentDTO {
     @NotNull(message = "Amount is required.")
     private Double amount;
