@@ -27,6 +27,18 @@ databaseChangeLog:
               - column:
                   name: timestamp
                   type: TIMESTAMP
+              - column:
+                  name: created_date
+                  type: DATETIME
+              - column:
+                  name: last_modified_date
+                  type: DATETIME
+              - column:
+                  name: created_by
+                  type: VARCHAR(20)
+              - column:
+                  name: last_modified_by
+                  type: VARCHAR(20)
 
 # Add initial data to the `payment` table
   - changeSet:

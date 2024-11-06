@@ -10,6 +10,7 @@ import org.example.payment.repository.PaymentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +36,12 @@ public class PaymentService {
             // No filter applied, get all payments
             payments = paymentRepository.findAll(pageable);
         }
-
         // Map entities to DTOs
         return payments.map(paymentMapper::toDto);
     }
 
     // Create a new payment
+    @Transactional
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
         if (paymentDTO.getAmount() == null || paymentDTO.getAmount() <= 0) {
             throw new InvalidPaymentException("Invalid payment amount.");
@@ -51,6 +52,7 @@ public class PaymentService {
     }
 
     // Delete a payment by ID
+    @Transactional
     public void deletePayment(Long id) {
         if (!paymentRepository.existsById(id)) {
             throw new PaymentNotFoundException(id);
