@@ -68,8 +68,8 @@ class PaymentServiceTest {
     @Test
     void testCreatePayment_withValidData() {
         PaymentDTO paymentDTO = new PaymentDTO(150.0, "USD", "AccountA", "AccountB");
-        Payment payment = new Payment(null, 150.0, "USD", "AccountA", "AccountB", null);
-        Payment savedPayment = new Payment(1L, 150.0, "USD", "AccountA", "AccountB", null);
+        Payment payment = new Payment(null, 150.0, "USD", "AccountA", "AccountB", null, null, null, null, null);
+        Payment savedPayment = new Payment(1L, 150.0, "USD", "AccountA", "AccountB", null,null, null, null, null);
 
         when(paymentMapper.toEntity(paymentDTO)).thenReturn(payment);
         when(paymentRepository.save(payment)).thenReturn(savedPayment);
