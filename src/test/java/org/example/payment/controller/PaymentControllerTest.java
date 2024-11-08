@@ -13,11 +13,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,6 +35,7 @@ class PaymentControllerTest {
     private PaymentService paymentService;
 
     @Test
+    @WithMockUser
     void testGetAllPayments_withVariousQueryParameters() throws Exception {
         // Prepare mock response
         PaymentDTO paymentDTO = new PaymentDTO(); // Assuming it has default values; set fields if needed
@@ -61,11 +64,13 @@ class PaymentControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "andy", password = "password", roles = "ADMIN")
     void testCreatePayment() throws Exception {
         PaymentDTO createdPayment = new PaymentDTO(150.0, "USD", "AccountA", "AccountB");
         when(paymentService.createPayment(Mockito.any(PaymentDTO.class))).thenReturn(createdPayment);
 
         mockMvc.perform(post("/payments")
+                        .with(csrf().asHeader())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":150.0,\"currency\":\"USD\",\"fromAccount\":\"AccountA\",\"toAccount\":\"AccountB\"}"))
                 .andExpect(status().isCreated())
@@ -77,22 +82,24 @@ class PaymentControllerTest {
     }
 
     @Test
+    @WithMockUser
     void testDeletePayment_whenPaymentExists() throws Exception {
         Long paymentId = 1L;
         doNothing().when(paymentService).deletePayment(paymentId);
 
-        mockMvc.perform(delete("/payments/{id}", paymentId))
+        mockMvc.perform(delete("/payments/{id}", paymentId).with(csrf().asHeader()))
                 .andExpect(status().isNoContent());
 
         verify(paymentService, times(1)).deletePayment(paymentId);
     }
 
     @Test
+    @WithMockUser
     void testDeletePayment_whenPaymentNotFound() throws Exception {
         Long paymentId = 1L;
         doThrow(new PaymentNotFoundException(paymentId)).when(paymentService).deletePayment(paymentId);
 
-        mockMvc.perform(delete("/payments/{id}", paymentId))
+        mockMvc.perform(delete("/payments/{id}", paymentId).with(csrf().asHeader()))
                 .andExpect(status().isNotFound());
 
         verify(paymentService, times(1)).deletePayment(paymentId);

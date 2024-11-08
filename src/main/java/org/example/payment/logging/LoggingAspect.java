@@ -25,7 +25,7 @@ public class LoggingAspect {
     @Before("applicationPackagePointcut()")
     public void logBeforeMethod(JoinPoint joinPoint) {
         logger.info("Entering method: {}.{} with arguments: {}", joinPoint.getTarget().getClass().getSimpleName(),
-                joinPoint.getSignature().getName(), Arrays.stream(joinPoint.getArgs()).map(this::formatArgument).collect(Collectors.joining(", ")));
+                joinPoint.getSignature().getName(),  joinPoint.getArgs()); //Arrays.stream(joinPoint.getArgs()).map(this::formatArgument).collect(Collectors.joining(", ")));
     }
 
     // Log after successful method execution
