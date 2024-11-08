@@ -64,7 +64,7 @@ class PaymentControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "andy", password = "password", roles = "ADMIN")
+    @WithMockUser
     void testCreatePayment() throws Exception {
         PaymentDTO createdPayment = new PaymentDTO(150.0, "USD", "AccountA", "AccountB");
         when(paymentService.createPayment(Mockito.any(PaymentDTO.class))).thenReturn(createdPayment);
