@@ -1,2 +1,2 @@
 # PaymentProcessingService
-Personal project to create a service for managing payment transactions in a bank account.
+Project for creating a service that manages payment transactions in a bank account. 
