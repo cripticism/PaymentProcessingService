@@ -1,5 +1,6 @@
 package org.example.payment.service;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.example.payment.dto.PaymentDTO;
 import org.example.payment.exception.InvalidPaymentException;
@@ -49,6 +50,27 @@ public class PaymentService {
         Payment payment = paymentMapper.toEntity(paymentDTO);
         Payment savedPayment = paymentRepository.save(payment);
         return paymentMapper.toDto(savedPayment);
+    }
+
+    // Update an existing payment
+    @Transactional
+    public PaymentDTO updatePayment(Long id, PaymentDTO paymentDTO) throws ConstraintViolationException {
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new PaymentNotFoundException(id));
+
+        if (paymentDTO.getAmount() <= 0) {
+            throw new InvalidPaymentException("Amount must be greater than zero.");
+        }
+        if (paymentDTO.getFromAccount().equals(paymentDTO.getToAccount())) {
+            throw new InvalidPaymentException("Cannot transfer into the same account.");
+        }
+        payment.setAmount(paymentDTO.getAmount());
+        payment.setCurrency(paymentDTO.getCurrency());
+        payment.setFromAccount(paymentDTO.getFromAccount());
+        payment.setToAccount(paymentDTO.getToAccount());
+
+        Payment updatedPayment = paymentRepository.save(payment);
+        return paymentMapper.toDto(updatedPayment);
     }
 
     // Delete a payment by ID

@@ -1,5 +1,6 @@
 package org.example.payment.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.payment.dto.PaymentDTO;
 import org.example.payment.service.PaymentService;
@@ -30,9 +31,16 @@ public class PaymentController {
 
     // POST /payments: Create a new payment
     @PostMapping
-    public ResponseEntity<PaymentDTO> createPayment(@RequestBody PaymentDTO paymentDTO) {
+    public ResponseEntity<PaymentDTO> createPayment(@Valid @RequestBody PaymentDTO paymentDTO) {
         PaymentDTO createdPayment = paymentService.createPayment(paymentDTO);
         return ResponseEntity.status(201).body(createdPayment);
+    }
+
+    // PUT /payments/{id}: Update a payment by ID
+    @PutMapping("/{id}")
+    public ResponseEntity<PaymentDTO> updatePayment(@Valid @PathVariable Long id, @Valid @RequestBody PaymentDTO paymentDTO) {
+        PaymentDTO updatedPayment = paymentService.updatePayment(id, paymentDTO);
+        return ResponseEntity.ok(updatedPayment);
     }
 
     // DELETE /payments/{id}: Delete a payment by ID

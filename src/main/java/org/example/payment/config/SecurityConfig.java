@@ -1,7 +1,5 @@
 package org.example.payment.config;
 
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,9 +22,6 @@ import org.springframework.security.oauth2.server.resource.web.access.BearerToke
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -59,15 +54,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-                .exceptionHandling((ex) -> ex.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                                 .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
                 .build();
     }
 
-    /*
-     * This will allow the /token endpoint to use basic auth and everything else uses the SFC above
-     */
+    //This will allow the /token endpoint to use basic auth and everything else uses the SFC above
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
     SecurityFilterChain tokenSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -96,14 +89,4 @@ public class SecurityConfig {
         return new NimbusJwtEncoder(jwks);
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://localhost:3000"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }
