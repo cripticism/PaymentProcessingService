@@ -20,7 +20,6 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
 
-    // List all payments
     public Page<PaymentDTO> getAllPayments(Pageable pageable, Double amountGreaterThan, Double amountLessThan, Double amountEquals,
                                            Double minAmount, Double maxAmount) {
         Page<Payment> payments;
@@ -34,14 +33,11 @@ public class PaymentService {
         } else if (minAmount != null && maxAmount != null) {
             payments = paymentRepository.findByAmountBetween(minAmount, maxAmount, pageable);
         } else {
-            // No filter applied, get all payments
             payments = paymentRepository.findAll(pageable);
         }
-        // Map entities to DTOs
         return payments.map(paymentMapper::toDto);
     }
 
-    // Create a new payment
     @Transactional
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
         if (paymentDTO.getAmount() == null || paymentDTO.getAmount() <= 0) {
@@ -52,7 +48,6 @@ public class PaymentService {
         return paymentMapper.toDto(savedPayment);
     }
 
-    // Update an existing payment
     @Transactional
     public PaymentDTO updatePayment(Long id, PaymentDTO paymentDTO) throws ConstraintViolationException {
         Payment payment = paymentRepository.findById(id)
@@ -73,7 +68,6 @@ public class PaymentService {
         return paymentMapper.toDto(updatedPayment);
     }
 
-    // Delete a payment by ID
     @Transactional
     public void deletePayment(Long id) {
         if (!paymentRepository.existsById(id)) {

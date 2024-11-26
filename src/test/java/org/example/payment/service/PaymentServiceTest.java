@@ -40,7 +40,6 @@ class PaymentServiceTest {
         MockitoAnnotations.openMocks(this);
         pageable = PageRequest.of(0, 10);
 
-        // Create sample Payment and PaymentDTO
         payment = new Payment();
         payment.setAmount(150.0);
         paymentDTO = new PaymentDTO();
@@ -51,15 +50,12 @@ class PaymentServiceTest {
 
     @Test
     public void testGetAllPayments_withAmountGreaterThan() {
-        // Arrange
         Double amountGreaterThan = 100.0;
         Page<Payment> paymentsPage = new PageImpl<>(List.of(payment));
         when(paymentRepository.findByAmountGreaterThan(amountGreaterThan, pageable)).thenReturn(paymentsPage);
 
-        // Act
         Page<PaymentDTO> result = paymentService.getAllPayments(pageable, amountGreaterThan, null, null, null, null);
 
-        // Assert
         verify(paymentRepository, times(1)).findByAmountGreaterThan(amountGreaterThan, pageable);
         assertEquals(1, result.getContent().size());
         assertEquals(paymentDTO.getAmount(), result.getContent().get(0).getAmount());

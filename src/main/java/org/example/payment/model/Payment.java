@@ -29,7 +29,7 @@ public class Payment {
     private String currency;
     private String fromAccount;
     private String toAccount;
-    @Column(nullable = false) // Optional: Ensures timestamp is always set
+    @Column(nullable = false)
     private Timestamp timestamp;
 
     @CreatedDate

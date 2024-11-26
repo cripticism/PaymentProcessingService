@@ -60,7 +60,6 @@ public class SecurityConfig {
                 .build();
     }
 
-    //This will allow the /token endpoint to use basic auth and everything else uses the SFC above
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
     SecurityFilterChain tokenSecurityFilterChain(HttpSecurity http) throws Exception {

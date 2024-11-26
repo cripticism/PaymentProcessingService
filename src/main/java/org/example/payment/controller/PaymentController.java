@@ -20,7 +20,6 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-    // GET /payments: List all payments
     @Operation(summary = "Get all payments", description = "Retrieve a list of all payments")
     @ApiResponse(responseCode = "200", description = "Successful operation")
     @GetMapping
@@ -35,7 +34,6 @@ public class PaymentController {
         return ResponseEntity.ok(payments);
     }
 
-    // POST /payments: Create a new payment
     @Operation(summary = "Create a new payment")
     @PostMapping
     public ResponseEntity<PaymentDTO> createPayment(@Valid @RequestBody PaymentDTO paymentDTO) {
@@ -43,7 +41,6 @@ public class PaymentController {
         return ResponseEntity.status(201).body(createdPayment);
     }
 
-    // PUT /payments/{id}: Update a payment by ID
     @Operation(summary = "Update a payment by ID")
     @PutMapping("/{id}")
     public ResponseEntity<PaymentDTO> updatePayment(@Valid @PathVariable Long id, @Valid @RequestBody PaymentDTO paymentDTO) {
@@ -51,7 +48,6 @@ public class PaymentController {
         return ResponseEntity.ok(updatedPayment);
     }
 
-    // DELETE /payments/{id}: Delete a payment by ID
     @Operation(summary = "Delete a payment by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePayment(@Parameter(description = "ID of the payment to delete") @PathVariable Long id) {
