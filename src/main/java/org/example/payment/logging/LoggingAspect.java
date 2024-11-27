@@ -16,19 +16,16 @@ public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    // Pointcut to match all methods in controller and service packages
     @Pointcut("within(org.example.payment.controller..*) || within(org.example.payment.service..*)")
     public void applicationPackagePointcut() {
     }
 
-    // Log before each method execution
     @Before("applicationPackagePointcut()")
     public void logBeforeMethod(JoinPoint joinPoint) {
         logger.info("Entering method: {}.{} with arguments: {}", joinPoint.getTarget().getClass().getSimpleName(),
                 joinPoint.getSignature().getName(),  joinPoint.getArgs()); //Arrays.stream(joinPoint.getArgs()).map(this::formatArgument).collect(Collectors.joining(", ")));
     }
 
-    // Log after successful method execution
     @AfterReturning(pointcut = "applicationPackagePointcut()", returning = "result")
     public void logAfterMethod(JoinPoint joinPoint, Object result) {
         if (result instanceof ResponseEntity<?> response) {
@@ -43,7 +40,6 @@ public class LoggingAspect {
         }
     }
 
-    // Log if a method throws an exception
     @AfterThrowing(pointcut = "applicationPackagePointcut()", throwing = "exception")
     public void logAfterException(JoinPoint joinPoint, Throwable exception) {
         logger.error("Exception in method: {}.{} with message: {}", joinPoint.getTarget().getClass().getSimpleName(),
