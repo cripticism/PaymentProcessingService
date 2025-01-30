@@ -48,7 +48,7 @@ REST API for managing payment transactions in a bank account. This API allows li
 
 1. **Clone the Repository**
    ```bash
-   git clone https://gitlab.softvision.ro/andrei.clatinici/PaymentProcessingService.git
+   git clone https://github.com/cripticism/PaymentProcessingService.git
 ####
 2. **Running the application inside Docker**
     ```bash
